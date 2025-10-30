@@ -23,7 +23,7 @@
     </div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref, computed, onMounted } from 'vue';
 import axios from 'axios';
 
@@ -63,7 +63,7 @@ const groupedIngredients = computed(() => {
 
 const submitTaco = async () => {
     taco.value = {
-        name: tacoName.value, 
+        name: tacoName.value,
         ingredients: selectedIngredients.value.map(id => ({ id }))
     }
 

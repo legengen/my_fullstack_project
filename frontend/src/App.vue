@@ -1,7 +1,3 @@
-<script setup>
-
-</script>
-
 <template>
   <nav>
     <router-link to="/TacoDesigner">玉米卷设计</router-link>
