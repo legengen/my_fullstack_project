@@ -5,11 +5,15 @@
         <div v-for="field in formFields" :key="field">
             <label :for="field">{{ field }}:</label>
             <input type="text" v-model="backgroundData[field]" :id="field">
+            <!-- TODO: 去除已填写表单的空白提示 -->
+            <span v-if="errors" class="error">{{ errors[field] }}</span>
         </div>
         <h3>Here's how I'll pay...</h3>
         <div v-for="field in paymentFields" :key="field">
             <label :for="field">{{ field }}:</label>
             <input type="text" v-model="backgroundData[field]" :id="field">
+            <!-- TODO: 去除已填写表单的空白提示 -->
+            <span v-if="errors" class="error">{{ errors[field] }}</span>
         </div>
         <button type="submit">submit</button>
     </form>
@@ -18,22 +22,23 @@
 <script lang="ts" setup>
 import { ref, reactive } from 'vue'
 import axios from 'axios'
+const errors = reactive<Record<string, string>>({})
 const backgroundData = reactive({
-  name: '',
-  street: '',
-  city: '',
-  state: '',
-  zip: '',
+  deliveryName: '',
+  deliveryStreet: '',
+  deliveryCity: '',
+  deliveryState: '',
+  deliveryZip: '',
   ccNumber: '',
   ccExpiration: '',
   ccCVV: ''
 })
 const formFields = ref<(keyof typeof backgroundData)[]>([
-  'name',
-  'street',
-  'city',
-  'state',
-  'zip'
+  'deliveryName',
+  'deliveryStreet',
+  'deliveryCity',
+  'deliveryState',
+  'deliveryZip'
 ])
 const paymentFields = ref<(keyof typeof backgroundData)[]>([
   'ccNumber',
@@ -43,23 +48,27 @@ const paymentFields = ref<(keyof typeof backgroundData)[]>([
 
 const submitOrder = async () => {
   try {
-    const payload = {
-      deliveryName: backgroundData.name,
-      deliveryStreet: backgroundData.street,
-      deliveryCity: backgroundData.city,
-      deliveryState: backgroundData.state,
-      deliveryZip: backgroundData.zip,
-      ccNumber: backgroundData.ccNumber,
-      ccExpiration: backgroundData.ccExpiration,
-      ccCVV: backgroundData.ccCVV
-    }
-    const res = await axios.post("/api/orders", payload)
+    const res = await axios.post("/api/orders", backgroundData)
     alert(res.data)
   }
   catch (err) {
-    console.error(err)
-    alert('提交失败')
+    if(axios.isAxiosError(err)){
+      if (err.response?.status === 400) {
+        Object.assign(errors, err.response.data);
+      } else {
+        alert(err.message);
+      }
+    }
+    else {
+      alert('未知错误')
+    }
   }
 
 }
 </script>
+
+<style>
+.error {
+  color: red;
+}
+</style>

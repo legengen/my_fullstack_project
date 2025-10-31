@@ -1,5 +1,6 @@
 package tacos.web;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import tacos.TacoOrder;
@@ -10,7 +11,7 @@ import tacos.TacoOrder;
 public class OrderController {
 
     @PostMapping("/orders")
-    public String processOrder(@RequestBody TacoOrder order) {
+    public String processOrder(@Valid @RequestBody TacoOrder order) {
         log.info("Order submitted: " + order);
         return order.getDeliveryName();
     }

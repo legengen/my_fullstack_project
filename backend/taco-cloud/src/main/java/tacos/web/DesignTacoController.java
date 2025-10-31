@@ -3,6 +3,7 @@ package tacos.web;
 import java.util.Arrays;
 import java.util.List;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +35,7 @@ public class DesignTacoController {
     }
 
     @PostMapping("/design")
-    public Taco processTaco(@RequestBody Taco taco)  {
+    public Taco processTaco(@Valid @RequestBody Taco taco)  {
         System.out.println("收到的taco: " + taco.getName());
         log.info("Processing taco: " + taco);
         return taco;
